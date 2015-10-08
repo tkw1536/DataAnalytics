@@ -1,7 +1,118 @@
-from matplotlib import pyplot
+from matplotlib import pyplot, ticker
 
 # (c) Tom Wiesing 2015
 # licensed under MIT license
+
+def paralellLines(M,axis=1,labels=(), interactive=True, title="",show=True):
+    """
+        Makes an optionally interactive paralell Lines plot.
+
+        M: Matrix to visualise.
+        axis: Axis of data values to plot. Needs to be either 1 or 0. Defaults to 1.
+        labels: Labels of the axes to plot.
+        interactive: Determines if the plot is interactive. Defaults to True.
+        title: Title of the Plot to make. Defaults to "".
+        show: Should the figure be shown immediatly. Defaults to True.
+    """
+
+    # ensure axis is of the right type.
+    if axis != 1 and axis != 0:
+        raise ValueError("Axis must be 0 or 1")
+
+    if axis == 0:
+        return paralellLines(M.T,axis=1,components=components,labels=labels,title=title,show=show)
+
+    # do we have enough components?
+    if M.shape[0] != len(labels):
+        raise ValueError("Not enough labels for all components. ")
+
+    # make a figure with a title.
+    fig = pyplot.figure()
+    fig.suptitle(title)
+
+    # and an axis
+    ax = fig.add_subplot(111)
+
+    xs = range(M.shape[0])
+    ys = range(M.shape[1])
+
+    # plot all the lines.
+    for y in ys:
+        ax.plot(xs, M[:,y], 'k-', picker=5)
+
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    zorder = ax.get_zorder()
+
+    # add a bunch of new axes
+    for (x, l) in zip(xs, labels):
+
+        # add another axis.
+        newaxis = ax.twinx()
+        zorder = max(zorder, newaxis.get_zorder())
+
+        # set its x and y limits
+        newaxis.set_xlim(xlim)
+        newaxis.set_ylim(ylim)
+
+        # set the color
+        newaxis.spines['left'].set_color('none')
+        newaxis.spines['right'].set_position(('data',x))
+
+        # hide the x axis
+        newaxis.get_xaxis().set_visible(False)
+
+        # and add a label
+        newaxis.text(x, ylim[1],l, horizontalalignment='right',verticalalignment='top',rotation='horizontal')
+
+    # Hide all the other axes.
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+
+    # clear that plot
+    ax.lines = []
+
+    # add a new plot on top
+    finalaxis = ax.twinx()
+
+    # set the xaxis and yaxis
+    finalaxis.set_xlim(xlim)
+    finalaxis.set_ylim(ylim)
+
+    # hide the splines
+    finalaxis.get_xaxis().set_visible(False)
+    finalaxis.get_yaxis().set_visible(False)
+
+    # add all the lines (again)
+    for y in ys:
+        finalaxis.plot(xs, M[:,y], 'k-', picker=5 if interactive else False,zorder=1)
+
+    # add interactivity
+    def onclick(event):
+        thisline = event.artist
+
+        if thisline.get_color() == 'red':
+            for l in finalaxis.lines:
+                l.set_color('k')
+                l.set_zorder(1)
+        else:
+            for l in finalaxis.lines:
+                l.set_color('gray')
+                l.set_zorder(1)
+            thisline.set_color('red')
+            thisline.set_zorder(2)
+        pyplot.draw()
+
+    if interactive:
+        fig.canvas.mpl_connect('pick_event', onclick)
+
+    # show it if we want to.
+    if show:
+        pyplot.show()
+
+    # return the figure.
+    return fig
 
 def scatter(M,axis=1,components=(0, 1), labels=("", ""), title="",show=True):
     """
