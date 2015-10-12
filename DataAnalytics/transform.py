@@ -48,10 +48,11 @@ def permute(M,sigma,axis=1):
     else:
         P = M
 
-    Q = P
+    Q = numpy.zeros(P.shape)
 
     for r in range(P.shape[1]):
-        Q[:, r] = Q[:, sigma[r]]
+        print(r, sigma[r])
+        Q[:, r] = P[:, sigma[r]]
 
     if axis == 1:
         return Q.T

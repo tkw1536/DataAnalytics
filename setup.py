@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "DataAnalytics",
-    version = "0.0.1",
+    version = "0.0.4",
     author = "Tom Wiesing",
     author_email = "tkw01536@gmail.com",
     description = ("Python Library for DataAnalytics"),
