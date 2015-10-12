@@ -34,7 +34,7 @@ def PCA(M,axis=1):
         return P.T
     else:
         return P
-def reorder(M,sigma,axis=1):
+def permute(M,sigma,axis=1):
     """
         Reorders data items according to a permutation sigma.
 
@@ -48,9 +48,11 @@ def reorder(M,sigma,axis=1):
     else:
         P = M
 
+    Q = P
+
     for r in range(P.shape[1]):
         Q[:, r] = Q[:, sigma[r]]
-    
+
     if axis == 1:
         return Q.T
     else:
