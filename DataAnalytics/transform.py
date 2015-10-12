@@ -34,3 +34,24 @@ def PCA(M,axis=1):
         return P.T
     else:
         return P
+def reorder(M,sigma,axis=1):
+    """
+        Reorders data items according to a permutation sigma.
+
+        M: Matrix to apply PCA to.
+        sigma: Permutation of the attributes of M.
+        axis: Axis to permute against. Needs to be either 1 or 0. Defaults to 1.
+    """
+
+    if axis == 1:
+        P = M.T
+    else:
+        P = M
+
+    for r in range(P.shape[1]):
+        Q[:, r] = Q[:, sigma[r]]
+    
+    if axis == 1:
+        return Q.T
+    else:
+        return Q
