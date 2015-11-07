@@ -12,7 +12,7 @@ setup(
     description = ("Python Library for DataAnalytics"),
     license = "MIT",
     url = "https://github.com/tkw1536/DataAnalytics",
-    packages=['DataAnalytics'],
+    packages=['DataAnalytics', 'DataAnalytics.textual'],
     install_requires=('numpy', 'matplotlib', 'scipy'),
     long_description=read('README.md'),
     classifiers=[
