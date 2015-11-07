@@ -1,21 +1,12 @@
 import re
 
+from DataAnalytics.textual.stopwords import STOP_WORDS
+
 VOWELS = ["a", "e", "i", "o", "u"]
 VOWELSS = VOWELS + ["s"]
 TERMINATORS = [",", ";", ".", ":", "?", "!"]
-STOP_WORDS = [
-    "and", "or", "be", "the", "as", "about", "at", "from"
-    "i", "you", "he", "she", "it", "they", "them", "their", "there"
-]
 
-stem_word_cache = {
-    # pre-fill the cache with forms of to be
-    "am": "be",
-    "are": "be",
-    "is": "be",
-    "was": "be",
-    "were": "be"
-}
+stem_word_cache = {}
 
 def stem_word(word):
     """
@@ -38,7 +29,7 @@ def stem_word(word):
             word = word[:-len(t)]
 
     # check if the word ends with s and a non-s vowl
-    if word.endswith("s"):
+    if word.endswith("s") and len(word) > 1:
         if not word[-2] in VOWELSS:
             word = word[:-1]
 
@@ -93,11 +84,8 @@ def count_words(text, words):
         Counts words in a string.
 
         text: Text to count words in.
-        words: Words to count. 
+        words: Words to count.
     """
-
-    # stem all the worlds to find
-    words = list(map(stem_word, words))
 
     # word count vector
     word_counts = [0 for i in words]
@@ -113,7 +101,10 @@ def count_words(text, words):
 
     # go over each of the text words
     for t in text_words:
-        i = words.index(t)
+        try:
+            i = words.index(t)
+        except:
+            i = -1
         if i >= 0:
             # and increase the counter
             word_counts[i] += 1

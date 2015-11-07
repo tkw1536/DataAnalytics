@@ -36,7 +36,7 @@ def to_matrix(documents, n = 0, words = None):
         word_frequences = np.sum(words_matrix, axis=0)
 
         # find the top word indexes
-        top_words_indexes = np.argsort(word_frequences)[:n]
+        top_words_indexes = np.argsort(word_frequences)[::-1][:n]
 
         # update the words array
         all_words = [all_words[i] for i in list(top_words_indexes)]
