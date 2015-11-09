@@ -87,7 +87,22 @@ def count_words(text, words):
         words: Words to count.
     """
 
-    # word count vector
+    (words, counts) = count_all_words(text, and_words = words)
+    return counts[:len(words)]
+
+
+def count_all_words(text, and_words = []):
+    """
+        Counts words in a string.
+
+        text: Text to count words in.
+        and_words: Additional words to count (that may or may not be in the data).
+    """
+
+    # initialise a list of words
+    words = and_words
+
+    # and a word count_vector
     word_counts = [0 for i in words]
 
     # split all the worlds and map them
@@ -101,12 +116,15 @@ def count_words(text, words):
 
     # go over each of the text words
     for t in text_words:
+
+        # if it is already there, simply increase the count
         try:
             i = words.index(t)
-        except:
-            i = -1
-        if i >= 0:
-            # and increase the counter
             word_counts[i] += 1
 
-    return word_counts
+        # if not append them
+        except:
+            words.append(t)
+            word_counts.append(1)
+
+    return (words, word_counts)

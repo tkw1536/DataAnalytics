@@ -1,5 +1,5 @@
 import numpy as np
-from DataAnalytics.textual.words import find_words, count_words, stem_word
+from DataAnalytics.textual.words import find_words, count_all_words, stem_word
 
 def to_matrix(documents, n = 0, words = None):
     """
@@ -10,25 +10,31 @@ def to_matrix(documents, n = 0, words = None):
         words: Optional. Words to count.
     """
 
-    if words != None:
-        all_words = list(set(map(stem_word, words)))
+    # if we have no words yet set them as basic words
+    if words == None:
+        words = []
     else:
-        # create an array with all words
-        all_words = set()
+        words = list(map(words, stem_word))
 
-        # find all the words
-        for d in documents:
-            all_words.update(find_words(d))
+    # introduce an array of words
+    counts = [[] for d in documents]
 
-        # make it a list
-        all_words = list(all_words)
+    for i, d in enumerate(documents):
+        # count the number of words we had before
+        wl = len(words)
 
-    # create a words matrix
-    words_matrix = np.zeros((len(documents), len(all_words)))
+        # count all the words and update the counts
+        (words, counts[i]) = count_all_words(d, and_words = words)
 
-    # count all the words
-    for (i, d) in enumerate(documents):
-        words_matrix[i] = count_words(d, all_words)
+        # generate an array of zeros to add to the previous numbers
+        wl = [0]*(len(words) - wl)
+
+        # and add them to the matrix
+        for j in range(i):
+            counts[j] += wl
+
+    # turn it into a matrix now
+    words_matrix = np.array(counts)
 
     # if given specifically take only the first n indexes
     if n > 0:
@@ -39,11 +45,11 @@ def to_matrix(documents, n = 0, words = None):
         top_words_indexes = np.argsort(word_frequences)[::-1][:n]
 
         # update the words array
-        all_words = [all_words[i] for i in list(top_words_indexes)]
+        words = [words[i] for i in list(top_words_indexes)]
 
         # update the words matrix
         words_matrix = words_matrix[:, top_words_indexes]
 
 
     # return found words and word matrix
-    return all_words, words_matrix
+    return words, words_matrix
