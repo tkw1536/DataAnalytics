@@ -1,7 +1,56 @@
-from matplotlib import pyplot, ticker
+from matplotlib import pyplot, ticker, cm
+import numpy as np
 
 # (c) Tom Wiesing 2015
 # licensed under MIT license
+
+
+def colormesh(M, title="", xlabels=None, ylabels=None, cmap="YlOrBr", show=True):
+    """
+        Makes a colormesh plot of a matrix
+
+        M: Matrix to visualise.
+        title: Title of plot. Optional.
+        xlabels: Labels for values along the 0th axis of the matrix. Optional.
+        ylabels: Labels for values along the 1st axis of the matrix. Optional.
+        cmap: Colormap to use. Defaults to "YlOrBr"
+        show: Should the figure be shown immediatly. Defaults to True.
+    """
+
+    # generate the axis
+    x = range(M.shape[0])
+    y = range(M.shape[1])
+
+    # make a meshgrid
+    x, y = np.meshgrid(x, y)
+
+    # make a figure
+    fig = pyplot.figure()
+    fig.suptitle(title)
+
+    # add a color grid and a colorbar
+    ax = fig.add_subplot(1, 1, 1)
+    ax.set_xlim([0, M.shape[0] - 1])
+    ax.set_ylim([0, M.shape[1] - 1])
+
+
+    cm = ax.pcolormesh(x, y, M, cmap=pyplot.get_cmap(cmap))
+    fig.colorbar(cm)
+
+    # labels for x
+    if xlabels:
+        pyplot.xticks(list(range(M.shape[0])), xlabels, rotation='vertical')
+
+    # labels for y
+    if ylabels:
+        pyplot.yticks(list(range(M.shape[1])), ylabels)
+
+    # show the figure if asked to
+    if show:
+        pyplot.show()
+
+    # return the figure
+    return fig
 
 def paralellLines(M,axis=1,labels=(), interactive=True, title="",show=True):
     """

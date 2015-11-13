@@ -4,7 +4,7 @@ from DataAnalytics.textual.stopwords import STOP_WORDS
 
 VOWELS = ["a", "e", "i", "o", "u"]
 VOWELSS = VOWELS + ["s"]
-TERMINATORS = [",", ";", ".", ":", "?", "!"]
+TERMINATORS = [",", ";", ".", ":", "?", "!", "-", "&", "(", ")"]
 
 stem_word_cache = {}
 
@@ -87,7 +87,7 @@ def count_words(text, words):
         words: Words to count.
     """
 
-    (words, counts) = count_all_words(text, and_words = words)
+    (nw, counts) = count_all_words(text, and_words = words)
     return counts[:len(words)]
 
 
@@ -100,13 +100,13 @@ def count_all_words(text, and_words = []):
     """
 
     # initialise a list of words
-    words = and_words
+    words = list(and_words)[:]
 
     # and a word count_vector
     word_counts = [0 for i in words]
 
     # split all the worlds and map them
-    text_words = re.split('\\s+', text)
+    text_words = re.split('(\\s+|[\\+\\-\\(\\)\\[\\]\\{\\}])', text)
 
     # stem all the words
     text_words = map(stem_word, text_words)
