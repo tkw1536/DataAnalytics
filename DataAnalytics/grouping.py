@@ -1,3 +1,5 @@
+import numpy as np
+
 def group_indexes_by(data, group):
     """
         groups the indexes of an array.
@@ -38,3 +40,32 @@ def make_group_order(data, group):
 
     # return the list of groups
     return go
+
+def make_labels(groups, group_labels=None):
+    """
+        Makes labels and new group mappings.
+
+        groups: List of groups. 
+        group_labels: Labels for the groups. Optional.
+    """
+
+    # we do not have group labels
+    newgroups = sorted(list(set(groups)))
+
+    # make new group identifiers
+    pgroups = np.array(
+        list(
+            map(
+                lambda g:newgroups.index(g),
+                groups
+            )
+        )
+    )
+
+    if group_labels == None:
+        # if we do not have labels, use the group id as a label
+        plabels = list(map(str, newgroups))
+    else:
+        plabels = group_labels
+
+    return (pgroups, plabels)

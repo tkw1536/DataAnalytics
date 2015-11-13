@@ -1,5 +1,6 @@
 import numpy
 import matplotlib.mlab
+from sklearn import manifold
 
 # (c) Tom Wiesing 2015
 # licensed under MIT license
@@ -34,6 +35,30 @@ def PCA(M,axis=1):
         return P.T
     else:
         return P
+
+def MDS(M, n, seed=None):
+    """
+        Applies an (metric) MDS transform to a similarities matrix.
+
+        M: Matrix to tranform.
+        n: Dimensionality of embedded space.
+    """
+
+    mds_obj = manifold.MDS(n_components=n, dissimilarity="precomputed", random_state=seed)
+    return mds_obj.fit_transform(M)
+
+def NMDS(M, n, seed=None):
+    """
+        Applies an nonmetric MDS transform to a similarities matrix.
+
+        M: Matrix to tranform.
+        n: Dimensionality of embedded space.
+        seed: Random number generator seed to use. Optional.
+    """
+
+    mds_obj = manifold.MDS(metric=False, n_init=1, n_components=n, dissimilarity="precomputed", random_state=seed)
+    return mds_obj.fit_transform(M)
+
 def permute(M,sigma,axis=1):
     """
         Reorders data items according to a permutation sigma.

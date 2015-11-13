@@ -1,5 +1,8 @@
+import matplotlib
 from matplotlib import pyplot, ticker, cm
 import numpy as np
+
+from DataAnalytics.grouping import make_labels
 
 # (c) Tom Wiesing 2015
 # licensed under MIT license
@@ -192,6 +195,54 @@ def scatter(M,axis=1,components=(0, 1), labels=("", ""), title="",show=True):
     # set a few labels
     pyplot.xlabel(labels[0])
     pyplot.ylabel(labels[1])
+
+    # show it if we want to.
+    if show:
+        pyplot.show()
+
+    # return the figure.
+    return fig
+
+def grouped_scatter(M,groups, axis=1,components=(0, 1), group_labels=None, labels=("", ""), title="",show=True):
+    """
+        Return a figure of a grouped scatterplot of the matrix M.
+
+        M: Matrix to visualise.
+        groups: List of groups for the points in M.
+        axis: Axis of data values to plot. Needs to be either 1 or 0. Defaults to 1.
+        components: Components to make a scatter plot of. Defaults to (0, 1).
+        title: Title of the Plot to make. Defaults to "".
+        labels: Labels of the axes to plot.
+        group_labels: Labels for the groups. If given, need to be sorted by group number.
+        show: Should the figure be shown immediatly. Defaults to True.
+    """
+
+    # ensure axis is of the right type.
+    if axis != 1 and axis != 0:
+        raise ValueError("Axis must be 0 or 1")
+
+    if axis == 0:
+        return grouped_scatter(M.T,groups,axis=1,components=components,group_labels=group_labels, labels=labels,title=title,show=show)
+    (pgroups, plabels) = make_labels(groups, group_labels)
+
+    # make a figure with a title.
+    fig = pyplot.figure()
+    fig.suptitle(title)
+
+    # extarct Xs and Ys we want to plot
+    Xs = M[components[0],:]
+    Ys = M[components[1],:]
+
+    color=iter(cm.rainbow(np.linspace(0,1,len(plabels))))
+
+    for (i, n) in enumerate(plabels):
+        gids = np.where(pgroups == i)
+        pyplot.scatter(Xs[gids], Ys[gids], c=next(color), label=str(n))
+
+    # set a few labels
+    pyplot.xlabel(labels[0])
+    pyplot.ylabel(labels[1])
+    pyplot.legend()
 
     # show it if we want to.
     if show:

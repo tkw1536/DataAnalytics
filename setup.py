@@ -6,14 +6,14 @@ def read(fname):
 
 setup(
     name = "DataAnalytics",
-    version = "0.0.8",
+    version = "0.0.9",
     author = "Tom Wiesing",
     author_email = "tkw01536@gmail.com",
     description = ("Python Library for DataAnalytics"),
     license = "MIT",
     url = "https://github.com/tkw1536/DataAnalytics",
     packages=['DataAnalytics', 'DataAnalytics.textual'],
-    install_requires=('numpy', 'matplotlib', 'scipy'),
+    install_requires=('numpy', 'matplotlib', 'scipy', 'sklearn'),
     long_description=read('README.md'),
     classifiers=[
         "License :: OSI Approved :: MIT License",
