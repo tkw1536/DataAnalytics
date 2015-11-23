@@ -11,7 +11,7 @@ def query_to_index(query, IDF, words, M, d=None):
         IDF: IDF vector
         words: Words the word count matrix consists of.
         M: Term Importance matrix.
-        d: Distance Function ( = metric) to use. 
+        d: Distance Function ( = metric) to use.
     """
 
     # count words inside this vector
@@ -40,7 +40,9 @@ def make_TIM(M):
             ZO[x][y] = 1 if M[x][y] > 0 else 0
 
     # compute the IDFs
-    IDF = np.log(N / np.sum(ZO, axis=0))
+    wj = np.sum(ZO, axis=0)
+    wj = np.array([max(1, j) for j in wj])
+    IDF = np.log(N / wj)
 
     # return a term importatnce matrix
     return (IDF, IDF*M)
